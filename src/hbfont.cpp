@@ -47,7 +47,7 @@ void HBFont::init() {
 }
 
 HBFont::~HBFont() {
-	ftl.freeFace(face);
+    ftl.freeFace(face);
 
     hb_buffer_destroy(buffer);
     hb_font_destroy(font); 
