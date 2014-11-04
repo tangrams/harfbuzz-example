@@ -8,8 +8,8 @@ LIBS =	-lharfbuzz \
 
 EXE = harfbuzz-ex.out
 
-SOURCES := $(wildcard *.cpp)
-HEADERS := $(wildcard *.h)
+SOURCES := $(wildcard src/*.cpp)
+HEADERS := $(wildcard src/*.h)
 OBJECTS := $(SOURCES:.cpp=.o)
 
 %.o : %.cpp
