@@ -40,8 +40,6 @@ void HBFont::drawText(HBText& text) {
 }
 
 void HBFont::init() {
-	const char text[] = { "text" };
-
     font = hb_ft_font_create(face, NULL);
     buffer = hb_buffer_create();
     

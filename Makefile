@@ -6,7 +6,7 @@ LIBS =	-lharfbuzz \
 		-framework OpenGL \
 		-framework Cocoa
 
-EXE = ex-harfbuzz
+EXE = harfbuzz-ex.out
 
 SOURCES := $(wildcard *.cpp)
 HEADERS := $(wildcard *.h)
