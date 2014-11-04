@@ -1,10 +1,12 @@
 CC=clang++
 
-FLAGS = -g -O0 -fno-builtin -std=c++11 -O2 -Wall --pedantic \
+FLAGS = \
+	-g -O0 -fno-builtin -std=c++11 -O2 -Wall --pedantic \
 	`freetype-config --cflags` \
-	-I/usr/local/include/harfbuzz
+	-I/usr/local/include/harfbuzz \
+	-I/usr/local/include/ 
 	
-LIBS =	-lharfbuzz \
+LIBS = \
 	`freetype-config --libs` \
 	-framework GLUT \
 	-framework OpenGL \

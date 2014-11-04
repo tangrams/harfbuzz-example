@@ -6,6 +6,7 @@
 #include <GLUT/glut.h>
 
 #include "hbfont.h"
+#include "freetypelib.h"
 
 using namespace std;
 
@@ -13,7 +14,10 @@ int main(int argc, char** argv) {
     //glutInit(&argc, argv);
     //glutCreateWindow("");
 
-    HBFont hbf("fonts/DejaVuSerif.ttf");
+    // the font rasterizing library
+    FreeTypeLib lib;
+
+    HBFont<FT_Face, FreeTypeGlyph> hbf("fonts/DejaVuSerif.ttf", &lib);
 
     hbf.init();
     
