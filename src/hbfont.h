@@ -60,7 +60,7 @@ void HBFont<FF,FG>::drawText(HBText& text) {
 
 template <typename FF, typename FG>
 void HBFont<FF,FG>::init() {
-	// TODO : use hb_font_create, to create non-freetype face with harfbuzz, to make this generic
+	// TODO : use hb_font_create to make this generic
     font = hb_ft_font_create(*face, NULL); 
     buffer = hb_buffer_create();
     

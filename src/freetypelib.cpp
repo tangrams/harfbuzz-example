@@ -42,12 +42,13 @@ int FreeTypeLib::force_ucs2_charmap(FT_Face ftf) {
 FreeTypeGlyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
     FreeTypeGlyph* g = new FreeTypeGlyph;
     
-    FT_Int32 flags =  FT_LOAD_RENDER | FT_LOAD_TARGET_LCD;
+    FT_Int32 flags =  FT_LOAD_RENDER;
 
     assert(!FT_Load_Glyph(*face,
         glyphIndex, // the glyph_index in the font file 
         flags
     )); // rasterize
+
     FT_GlyphSlot slot = (*face)->glyph;
     FT_Bitmap ftBitmap = slot->bitmap;
     int top = slot->bitmap_top;     
