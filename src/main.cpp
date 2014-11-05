@@ -5,7 +5,7 @@
 #include <OpenGL/glu.h>
 #include <GLUT/glut.h>
 
-#include "hbfont.h"
+#include "hbshaper.h"
 #include "freetypelib.h"
 
 using namespace std;
@@ -17,9 +17,9 @@ int main(int argc, char** argv) {
     // the font rasterizing library
     FreeTypeLib lib;
 
-    HBFont<FT_Face, FreeTypeGlyph> hbf("fonts/DejaVuSerif.ttf", &lib);
+    HBShaper<FT_Face, FreeTypeGlyph> hbs("fonts/DejaVuSerif.ttf", &lib);
 
-    hbf.init();
+    hbs.init();
     
     HBText hbt = {
         "The quick brown fox jumps over the lazy dog",
@@ -28,7 +28,7 @@ int main(int argc, char** argv) {
         HB_DIRECTION_LTR
     };
 
-    hbf.drawText(hbt);
+    hbs.drawText(hbt);
 
     return 0;
 }

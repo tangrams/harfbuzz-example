@@ -16,13 +16,13 @@ typedef struct {
 
 class TrueTypeLib : public FontLib<TrueTypeFace, TrueTypeGlyph> {
 	public:
-		TrueTypeLib() {};
-		~TrueTypeLib() {};
+		TrueTypeLib();
+		~TrueTypeLib();
 
-		TrueTypeFace* loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) override { return NULL; };
-		void freeFace(TrueTypeFace* face) override {};
-		TrueTypeGlyph* rasterize(TrueTypeFace* face, uint32_t glyphIndex) const override { return NULL; };
-		void freeGlyph(TrueTypeGlyph* glyph) override {};
+		TrueTypeFace* loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) override;
+		void freeFace(TrueTypeFace* face) override;
+		TrueTypeGlyph* rasterize(TrueTypeFace* face, uint32_t glyphIndex) const override;
+		void freeGlyph(TrueTypeGlyph* glyph) override;
 
 	private:
 

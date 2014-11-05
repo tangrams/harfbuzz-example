@@ -21,6 +21,6 @@ TrueTypeGlyph* TrueTypeLib::rasterize(TrueTypeFace* face, uint32_t glyphIndex) c
 
 }
 
-void TrueTypeLib::freeGlyph(TrueTypeGlyph* glyph) override {
+void TrueTypeLib::freeGlyph(TrueTypeGlyph* glyph) {
 
 }
