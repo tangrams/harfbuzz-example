@@ -9,9 +9,9 @@ FreeTypeLib::~FreeTypeLib() {
 }
 
 FT_Face* FreeTypeLib::loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) {
-	FT_Face* face = new FT_Face;
+    FT_Face* face = new FT_Face;
 
-    assert(!FT_New_Face(lib, fontName.c_str(), 0, &(*face)));
+    assert(!FT_New_Face(lib, fontName.c_str(), 0, face));
     assert(!force_ucs2_charmap(*face));
     assert(!FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI));
 
@@ -23,7 +23,7 @@ void FreeTypeLib::freeFace(FT_Face* face) {
     delete face;
 }
 
-void FreeTypeLib::freeGlyph(FreeTypeGlyph* glyph) {
+void FreeTypeLib::freeGlyph(Glyph* glyph) {
     delete glyph;
 }
 
@@ -39,25 +39,26 @@ int FreeTypeLib::force_ucs2_charmap(FT_Face ftf) {
     return -1;
 }
 
-FreeTypeGlyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
-    FreeTypeGlyph* g = new FreeTypeGlyph;
+Glyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
+    Glyph* g = new Glyph;
     
-    FT_Int32 flags =  FT_LOAD_RENDER;
+    FT_Int32 flags =  FT_LOAD_DEFAULT;
 
     assert(!FT_Load_Glyph(*face,
         glyphIndex, // the glyph_index in the font file 
         flags
-    )); // rasterize
+    )); 
 
     FT_GlyphSlot slot = (*face)->glyph;
+    assert(!FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL));
+
     FT_Bitmap ftBitmap = slot->bitmap;
-    int top = slot->bitmap_top;     
-    int left = slot->bitmap_left;  
 
-    unsigned char* buffer = ftBitmap.buffer; 
-
-    cout << top << endl;
-    cout << left << endl;
+    g->buffer = ftBitmap.buffer;
+    g->width = ftBitmap.width;
+    g->height = ftBitmap.rows;
+    g->offset_x = slot->bitmap_left;
+    g->offset_y = slot->bitmap_top;
 
     return g;
 }

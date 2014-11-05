@@ -17,10 +17,10 @@ void TrueTypeLib::freeFace(TrueTypeFace* face) {
 
 }
 
-TrueTypeGlyph* TrueTypeLib::rasterize(TrueTypeFace* face, uint32_t glyphIndex) const { 
+Glyph* TrueTypeLib::rasterize(TrueTypeFace* face, uint32_t glyphIndex) const { 
 
 }
 
-void TrueTypeLib::freeGlyph(TrueTypeGlyph* glyph) {
+void TrueTypeLib::freeGlyph(Glyph* glyph) {
 
 }

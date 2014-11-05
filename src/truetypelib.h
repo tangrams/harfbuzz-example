@@ -8,22 +8,18 @@ using namespace std;
 
 typedef struct {
 
-} TrueTypeGlyph;
-
-typedef struct {
-
 } TrueTypeFace;
 
-class TrueTypeLib : public FontLib<TrueTypeFace, TrueTypeGlyph> {
-	public:
-		TrueTypeLib();
-		~TrueTypeLib();
+class TrueTypeLib : public FontLib<TrueTypeFace> {
+public:
+	TrueTypeLib();
+	~TrueTypeLib();
 
-		TrueTypeFace* loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) override;
-		void freeFace(TrueTypeFace* face) override;
-		TrueTypeGlyph* rasterize(TrueTypeFace* face, uint32_t glyphIndex) const override;
-		void freeGlyph(TrueTypeGlyph* glyph) override;
+	TrueTypeFace* loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) override;
+	void freeFace(TrueTypeFace* face) override;
+	Glyph* rasterize(TrueTypeFace* face, uint32_t glyphIndex) const override;
+	void freeGlyph(Glyph* glyph) override;
 
-	private:
+private:
 
 };

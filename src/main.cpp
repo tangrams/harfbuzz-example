@@ -11,13 +11,14 @@
 using namespace std;
 
 int main(int argc, char** argv) {
-    //glutInit(&argc, argv);
-    //glutCreateWindow("");
+    // enable opengl calls
+    glutInit(&argc, argv);
+    glutCreateWindow("");
 
     // the font rasterizing library
     FreeTypeLib lib;
 
-    HBShaper<FT_Face, FreeTypeGlyph> hbs("fonts/DejaVuSerif.ttf", &lib);
+    HBShaper<FT_Face> hbs("fonts/DejaVuSerif.ttf", &lib);
 
     hbs.init();
     
