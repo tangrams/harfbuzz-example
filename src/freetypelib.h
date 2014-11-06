@@ -6,9 +6,6 @@
 #include <iostream>
 #include <cassert>
 #include <cmath>
-#include <OpenGL/gl.h>
-#include <OpenGL/glu.h>
-#include <GLUT/glut.h>
 
 #include "fontlib.h"
 

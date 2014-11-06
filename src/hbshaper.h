@@ -6,6 +6,7 @@
 
 #include "fontlib.h"
 #include "hbtext.h"
+#include "glutils.h"
 
 using namespace std;
 
@@ -57,17 +58,20 @@ void HBShaper<FF>::drawText(HBText& text) {
     for(int i = 0; i < glyphCount; ++i) {
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
         
-        // TODO rendering stuff
-        
+        int twidth = pow(2, ceil(log(glyph->width)/log(2)));
+        int theight = pow(2, ceil(log(glyph->height)/log(2)));
+
+        auto tdata = new unsigned char[twidth * theight] ();
+
         for(int y = 0; y < glyph->height; ++y) {
             for(int x = 0; x < glyph->width; ++x) {
-                int data = (int) glyph->buffer[y * glyph->width + x];
-                // debug bitmap display
-                cout << (data == 255 ? '#' : '`');
+                tdata[y * twidth + x] = glyph->buffer[y * glyph->width + x];
             }
-            cout << endl;
         }
-        cout << endl;
+        
+        unsigned int textureId = uploadTextureData(twidth, theight, tdata);
+
+        delete[] tdata;
 
         float x0 = x + glyphPos[i].x_offset + glyph->offset_x;
         float x1 = x0 + glyph->width;
@@ -81,6 +85,8 @@ void HBShaper<FF>::drawText(HBText& text) {
         y += glyphPos[i].y_advance;
 
         lib->freeGlyph(glyph);
+
+        glDeleteTextures(1, &textureId);
     }
 }
 
