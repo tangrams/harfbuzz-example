@@ -1,11 +1,11 @@
 #include "freetypelib.h"
 
 FreeTypeLib::FreeTypeLib() {
-	assert(!FT_Init_FreeType(&lib));
+    assert(!FT_Init_FreeType(&lib));
 }
 
 FreeTypeLib::~FreeTypeLib() {
-	FT_Done_FreeType(lib);
+    FT_Done_FreeType(lib); 
 }
 
 FT_Face* FreeTypeLib::loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) {
@@ -57,8 +57,8 @@ Glyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
     g->buffer = ftBitmap.buffer;
     g->width = ftBitmap.width;
     g->height = ftBitmap.rows;
-    g->offset_x = slot->bitmap_left;
-    g->offset_y = slot->bitmap_top;
+    g->bearing_x = slot->bitmap_left;
+    g->bearing_y = slot->bitmap_top;
 
     return g;
 }

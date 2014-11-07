@@ -6,8 +6,8 @@ typedef struct {
 	unsigned char* buffer;
 	unsigned int width;
 	unsigned int height;
-	float offset_x;
-	float offset_y;
+	float bearing_x;
+	float bearing_y;
 } Glyph;
 
 /* 

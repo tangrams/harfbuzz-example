@@ -8,7 +8,8 @@ FLAGS = \
 	
 LIBS = \
 	`freetype-config --libs` \
-	-framework GLUT \
+	-lglfw3 \
+	-lglew \
 	-framework OpenGL \
 	-framework Cocoa
 

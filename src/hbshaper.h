@@ -3,6 +3,7 @@
 #include <hb.h>
 #include <hb-ft.h>
 #include <cmath>
+#include <vector>
 
 #include "fontlib.h"
 #include "hbtext.h"
@@ -17,7 +18,7 @@ public:
 	~HBShaper();
 
 	void init();
-	void drawText(HBText& text);
+	vector<gl::Mesh*> drawText(HBText& text, float x, float y);
 
 private:
 	FontLib<FF> *lib;
@@ -29,13 +30,15 @@ private:
 
 template <typename FF>
 HBShaper<FF>::HBShaper(const string& fontFile, FontLib<FF>* fontLib) {
-	lib = fontLib;
+    lib = fontLib;
     float size = 50;
     face = lib->loadFace(fontFile, size * 64, 72, 72);
 }
 
 template <typename FF>
-void HBShaper<FF>::drawText(HBText& text) {
+vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
+    vector<gl::Mesh*> meshes;
+
     hb_buffer_reset(buffer);
 
     hb_buffer_set_direction(buffer, text.direction);
@@ -52,9 +55,6 @@ void HBShaper<FF>::drawText(HBText& text) {
     hb_glyph_info_t *glyphInfo = hb_buffer_get_glyph_infos(buffer, &glyphCount);
     hb_glyph_position_t *glyphPos = hb_buffer_get_glyph_positions(buffer, &glyphCount);
 
-    float x = 20;
-    float y = 20;
-
     for(int i = 0; i < glyphCount; ++i) {
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
         
@@ -63,31 +63,67 @@ void HBShaper<FF>::drawText(HBText& text) {
 
         auto tdata = new unsigned char[twidth * theight] ();
 
-        for(int y = 0; y < glyph->height; ++y) {
-            for(int x = 0; x < glyph->width; ++x) {
-                tdata[y * twidth + x] = glyph->buffer[y * glyph->width + x];
+        for(int iy = 0; iy < glyph->height; ++iy) {
+            for(int ix = 0; ix < glyph->width; ++ix) {
+                tdata[iy * twidth + ix] = glyph->buffer[iy * glyph->width + ix];
             }
         }
-        
-        unsigned int textureId = uploadTextureData(twidth, theight, tdata);
 
-        delete[] tdata;
+        #ifdef DEBUG
+        for(int iy = 0; iy < glyph->height; ++iy) {
+            for(int ix = 0; ix < glyph->width; ++ix) {
+                int c = (int) glyph->buffer[iy * glyph->width + ix];
+                cout << (c == 255 ? '#' : '`');
+            }
+            cout << endl;
+        }
+        cout << endl;
+        #endif
 
-        float x0 = x + glyphPos[i].x_offset + glyph->offset_x;
+        float s0 = 0.0;
+        float t0 = 0.0;
+        float s1 = (float) glyph->width / twidth;
+        float t1 = (float) glyph->height / theight;
+        float xa = (float) glyphPos[i].x_advance / 64;
+        float ya = (float) glyphPos[i].y_advance / 64;
+        float xo = (float) glyphPos[i].x_offset / 64;
+        float yo = (float) glyphPos[i].y_offset / 64;
+        float x0 = x + xo + glyph->bearing_x;
+        float y0 = floor(y + yo + glyph->bearing_y);
         float x1 = x0 + glyph->width;
-        float y0 = floor(y + glyphPos[i].y_offset + glyph->offset_y);
         float y1 = floor(y0 - glyph->height);
 
-        cout << x0 << " " << y0 << endl;
-        cout << x1 << " " << y1 << endl;
+        gl::Vertex* vertices = new gl::Vertex[4];
+        vertices[0] = { x0,y0, s0,t0 };
+        vertices[1] = { x0,y1, s0,t1 };
+        vertices[2] = { x1,y1, s1,t1 };
+        vertices[3] = { x1,y0, s1,t0 };
 
-        x += glyphPos[i].x_advance;
-        y += glyphPos[i].y_advance;
+        unsigned short* indices = new unsigned short[6];
+        indices[0] = 0; indices[1] = 1;
+        indices[2] = 2; indices[3] = 0;
+        indices[4] = 2; indices[5] = 3;
+
+        gl::Mesh* m = new gl::Mesh;
+
+        m->indices = indices;
+        m->textureData = tdata;
+        m->textureId = gl::getTextureId(twidth, theight);
+        m->vertices = vertices;
+        m->nbIndices = 6;
+        m->nbVertices = 4;
+
+        gl::uploadTextureData(m->textureId, twidth, theight, tdata);
+
+        meshes.push_back(m);
+
+        x += xa;
+        y += ya;
 
         lib->freeGlyph(glyph);
-
-        glDeleteTextures(1, &textureId);
     }
+
+    return meshes;
 }
 
 template <typename FF>
