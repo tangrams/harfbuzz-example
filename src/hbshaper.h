@@ -108,7 +108,10 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
 
         m->indices = indices;
         m->textureData = tdata;
+
+        // don't do this!! use atlas texture instead
         m->textureId = gl::getTextureId(twidth, theight);
+        
         m->vertices = vertices;
         m->nbIndices = 6;
         m->nbVertices = 4;

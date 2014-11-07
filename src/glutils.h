@@ -12,17 +12,17 @@ namespace gl {
 	GLint uvLoc;
 
 	typedef struct {
-	    float x, y;
-	    float s, t;
+		float x, y;
+		float s, t;
 	} Vertex;
 
 	typedef struct {
-	    unsigned short* indices;
-	    unsigned char* textureData;
-	    unsigned int textureId;
-	    Vertex* vertices;
-	    unsigned int nbIndices;
-	    unsigned int nbVertices;
+		unsigned short* indices;
+		unsigned char* textureData;
+		unsigned int textureId;
+		Vertex* vertices;
+		unsigned int nbIndices;
+		unsigned int nbVertices;
 		GLuint vertexBuffer;
 		GLuint indexBuffer;
 	} Mesh;
@@ -35,8 +35,8 @@ namespace gl {
 		varying vec2 f_uv;
 
 		void main() {
-		    gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * a_position;
-		    f_uv = a_uv;
+			gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * a_position;
+			f_uv = a_uv;
 		}
 	)END";
 
@@ -47,7 +47,7 @@ namespace gl {
 		varying vec2 f_uv;
 
 		void main() {
-		    gl_FragColor = texture2D(u_tex, f_uv);
+			gl_FragColor = texture2D(u_tex, f_uv);
 		}
 	)END";
 
@@ -64,11 +64,11 @@ namespace gl {
 		glCompileShader(vertex);
 		glAttachShader(program, vertex);
 
-	    glLinkProgram(program);
-	    
+		glLinkProgram(program);
+
 		glUniform1i(glGetUniformLocation(program, "u_tex"), 0);
 
-	    positionLoc = glGetAttribLocation(program, "a_position");
+		positionLoc = glGetAttribLocation(program, "a_position");
 		uvLoc =	glGetAttribLocation(program, "a_uv");
 	}
 
@@ -79,18 +79,18 @@ namespace gl {
 
 		for(auto mesh: meshes) {
 			glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	        glBindTexture(GL_TEXTURE_2D, mesh->textureId);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+			glBindTexture(GL_TEXTURE_2D, mesh->textureId);
 
-	        glEnableVertexAttribArray(positionLoc);
-	        glVertexAttribPointer(positionLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
-	        glEnableVertexAttribArray(uvLoc);
-	        glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(2 * sizeof(float)));
+			glEnableVertexAttribArray(positionLoc);
+			glVertexAttribPointer(positionLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+			glEnableVertexAttribArray(uvLoc);
+			glVertexAttribPointer(uvLoc, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (const GLvoid*)(2 * sizeof(float)));
 
-	        glDrawElements(GL_TRIANGLES, mesh->nbIndices, GL_UNSIGNED_SHORT, 0);
-    	}
+			glDrawElements(GL_TRIANGLES, mesh->nbIndices, GL_UNSIGNED_SHORT, 0);
+		}
 
-        glUseProgram(0);
+		glUseProgram(0);
 	}
 
 	void resize(GLFWwindow* window, int w, int h) {
@@ -100,62 +100,66 @@ namespace gl {
 	void finish() {
 		glDeleteShader(fragment);
 		glDeleteShader(vertex);
-    	glDeleteProgram(program);
+		glDeleteProgram(program);
 	}
 
 	void initGL(int argc, char** argv) {
 		int width = 800;
-	    int height = 600;
+		int height = 400;
 
-	    if(!glfwInit()) {
-	    	std::cerr << "glfw init failed" << std::endl;
-	    	exit(-1);
+		if(!glfwInit()) {
+			std::cerr << "glfw init failed" << std::endl;
+			exit(-1);
 		}
-		
+
 		g_window = glfwCreateWindow(width, height, "harfbuzz-ex", NULL, NULL);
 
-	    if(!g_window) {
-	        glfwTerminate();
-	        std::cerr << "window creation failed" << std::endl;
-	        exit(-1);
-	    }
+		if(!g_window) {
+			glfwTerminate();
+			std::cerr << "window creation failed" << std::endl;
+			exit(-1);
+		}
 
-	    glfwMakeContextCurrent(g_window);
+		glfwMakeContextCurrent(g_window);
 
-	    glewExperimental = GL_TRUE;
-	    GLenum err = glewInit();
+		glewExperimental = GL_TRUE;
+		GLenum err = glewInit();
 
-	    if(err != GLEW_OK) {
-	        glfwTerminate();
-	        std::cerr << glewGetErrorString(err) << std::endl;
-	        std::cerr << "glew init failed" << std::endl;
-	        exit(-1);
-	    }
+		if(err != GLEW_OK) {
+			glfwTerminate();
+			std::cerr << glewGetErrorString(err) << std::endl;
+			std::cerr << "glew init failed" << std::endl;
+			exit(-1);
+		}
 
-	    glfwSetWindowSizeCallback(g_window, resize);
-	    glClearColor(1, 1, 1, 1);
-	    glViewport(0, 0, width, height);
-	    createShaderProgram();
-	    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glfwSetWindowSizeCallback(g_window, resize);
+		
+		glClearColor(1, 1, 1, 1);
+		glViewport(0, 0, width, height);
+		
+		createShaderProgram();
+
 		glMatrixMode(GL_PROJECTION);
 		glLoadIdentity();
-		glOrtho(0, width, height, 0, -1, 1);
+		glOrtho(0, width, 0, height, -1, 1);
+
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+
 		glDisable(GL_DEPTH_TEST);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}
 
 	void loop(const std::vector<Mesh*> meshes) {
-	    while(!glfwWindowShouldClose(g_window)) {
-        	glfwSwapBuffers(g_window);
+		while(!glfwWindowShouldClose(g_window)) {
+			glfwSwapBuffers(g_window);
 
-        	render(meshes); 
+			render(meshes); 
 
-        	glfwPollEvents();
-	    }
-    	glfwTerminate();
+			glfwPollEvents();
+		}
+		glfwTerminate();
 	}
 
 	void uploadMeshes(const std::vector<Mesh*> meshes) {
@@ -171,13 +175,13 @@ namespace gl {
 
 			glBindTexture(GL_TEXTURE_2D, mesh->textureId);
 
-	        glGenBuffers(1, &mesh->vertexBuffer);
+			glGenBuffers(1, &mesh->vertexBuffer);
 			glBindBuffer(GL_ARRAY_BUFFER, mesh->vertexBuffer);
-	        glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
+			glBufferData(GL_ARRAY_BUFFER, data.size() * sizeof(float), &data[0], GL_STATIC_DRAW);
 
-	        glGenBuffers(1, &mesh->indexBuffer);
-	        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
-	        glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nbIndices * sizeof(unsigned short), mesh->indices, GL_STATIC_DRAW);
+			glGenBuffers(1, &mesh->indexBuffer);
+			glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mesh->indexBuffer);
+			glBufferData(GL_ELEMENT_ARRAY_BUFFER, mesh->nbIndices * sizeof(unsigned short), mesh->indices, GL_STATIC_DRAW);
 	    }
 	}
 
