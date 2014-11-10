@@ -4,6 +4,7 @@
 #include <hb-ft.h>
 #include <cmath>
 #include <vector>
+#include <limits>
 
 #include "fontlib.h"
 #include "hbtext.h"
@@ -48,8 +49,11 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
     
     hb_buffer_add_utf8(buffer, text.c_data(), length, 0, length);
 
+    // hb_tag_t tag =  HB_TAG('l','i','g','a');
+    // hb_feature_t ligaFeature[1] = { tag, 0, 0u, std::numeric_limits<unsigned int>::max() };
+
     // harfbuzz shaping
-    hb_shape(font, buffer, NULL, 0);  
+    hb_shape(font, buffer, NULL, 0);
 
     unsigned int glyphCount;
     hb_glyph_info_t *glyphInfo = hb_buffer_get_glyph_infos(buffer, &glyphCount);
@@ -64,9 +68,7 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
         auto tdata = new unsigned char[twidth * theight] ();
 
         for(int iy = 0; iy < glyph->height; ++iy) {
-            for(int ix = 0; ix < glyph->width; ++ix) {
-                tdata[iy * twidth + ix] = glyph->buffer[iy * glyph->width + ix];
-            }
+            memcpy(tdata + iy * twidth, glyph->buffer + iy * glyph->width, glyph->width);
         }
 
         #ifdef DEBUG
@@ -111,7 +113,7 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
 
         // don't do this!! use atlas texture instead
         m->textureId = gl::getTextureId(twidth, theight);
-        
+
         m->vertices = vertices;
         m->nbIndices = 6;
         m->nbVertices = 4;

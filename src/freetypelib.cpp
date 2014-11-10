@@ -48,7 +48,7 @@ Glyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
         glyphIndex, // the glyph_index in the font file 
         flags
     )); 
-
+    
     FT_GlyphSlot slot = (*face)->glyph;
     assert(!FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL));
 
