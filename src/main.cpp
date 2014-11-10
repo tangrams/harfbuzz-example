@@ -27,7 +27,7 @@ int main(int argc, char** argv) {
     hanShaper.init();
 
     HBText hbt1 = {
-        "ficellé fffffi. V.A.V", // no kerning operations yet
+        "ficellé fffffi. VAV.",
         "fr",
         HB_SCRIPT_LATIN,
         HB_DIRECTION_LTR

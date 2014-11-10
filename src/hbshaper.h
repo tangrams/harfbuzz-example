@@ -60,6 +60,18 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
     hb_glyph_position_t *glyphPos = hb_buffer_get_glyph_positions(buffer, &glyphCount);
 
     for(int i = 0; i < glyphCount; ++i) {
+        hb_position_t kernX = 0;
+        hb_position_t kernY = 0;
+
+        if(i > 0) {
+            hb_font_get_glyph_kerning_for_direction(font, 
+                glyphInfo[i - 1].codepoint, 
+                glyphInfo[i].codepoint,
+                text.direction,
+                &kernX, &kernY
+            );    
+        }
+        
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
         
         int twidth = pow(2, ceil(log(glyph->width)/log(2)));
@@ -86,8 +98,10 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
         float t0 = 0.0;
         float s1 = (float) glyph->width / twidth;
         float t1 = (float) glyph->height / theight;
-        float xa = (float) glyphPos[i].x_advance / 64;
-        float ya = (float) glyphPos[i].y_advance / 64;
+        float kx = (float) kernX / 64;
+        float ky = (float) kernY / 64;
+        float xa = (float) glyphPos[i].x_advance / 64 + kx;
+        float ya = (float) glyphPos[i].y_advance / 64 + ky;
         float xo = (float) glyphPos[i].x_offset / 64;
         float yo = (float) glyphPos[i].y_offset / 64;
         float x0 = x + xo + glyph->bearing_x;
