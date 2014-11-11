@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 
     end = clock();
 
-    std::cout << (float) (end - begin) / CLOCKS_PER_SEC << " ms" << std::endl;
+    std::cout << ((float) (end - begin) / CLOCKS_PER_SEC) * 1000 << " ms." << std::endl;
 
     gl::uploadMeshes(meshes);
     
