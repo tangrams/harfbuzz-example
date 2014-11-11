@@ -12,6 +12,19 @@
 
 using namespace std;
 
+namespace HBFeature {
+    const hb_tag_t KernTag = HB_TAG('k', 'e', 'r', 'n'); // kerning operations
+    const hb_tag_t LigaTag = HB_TAG('l', 'i', 'g', 'a'); // standard ligature substitution
+    const hb_tag_t CligTag = HB_TAG('c', 'l', 'i', 'g'); // contextual ligature substitution
+
+    static hb_feature_t LigatureOff = { LigaTag, 0, 0, std::numeric_limits<unsigned int>::max() };
+    static hb_feature_t LigatureOn  = { LigaTag, 1, 0, std::numeric_limits<unsigned int>::max() };
+    static hb_feature_t KerningOff  = { KernTag, 0, 0, std::numeric_limits<unsigned int>::max() };
+    static hb_feature_t KerningOn   = { KernTag, 1, 0, std::numeric_limits<unsigned int>::max() };
+    static hb_feature_t CligOff     = { CligTag, 0, 0, std::numeric_limits<unsigned int>::max() };
+    static hb_feature_t CligOn      = { CligTag, 1, 0, std::numeric_limits<unsigned int>::max() };
+}
+
 template <typename FF>
 class HBShaper {
 public:
@@ -20,6 +33,7 @@ public:
 
 	void init();
 	vector<gl::Mesh*> drawText(HBText& text, float x, float y);
+    void addFeature(hb_feature_t feature);
 
 private:
 	FontLib<FF> *lib;
@@ -27,6 +41,7 @@ private:
 
 	hb_font_t* font;
 	hb_buffer_t* buffer;
+    vector<hb_feature_t> features;
 };
 
 template <typename FF>
@@ -34,6 +49,11 @@ HBShaper<FF>::HBShaper(const string& fontFile, FontLib<FF>* fontLib) {
     lib = fontLib;
     float size = 50;
     face = lib->loadFace(fontFile, size * 64, 72, 72);
+}
+
+template <typename FF>
+void HBShaper<FF>::addFeature(hb_feature_t feature) {
+    features.push_back(feature);
 }
 
 template <typename FF>
@@ -49,11 +69,8 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
     
     hb_buffer_add_utf8(buffer, text.c_data(), length, 0, length);
 
-    // hb_tag_t tag =  HB_TAG('l','i','g','a');
-    // hb_feature_t ligaFeature[1] = { tag, 0, 0u, std::numeric_limits<unsigned int>::max() };
-
     // harfbuzz shaping
-    hb_shape(font, buffer, NULL, 0);
+    hb_shape(font, buffer, features.empty() ? NULL : &features[0], features.size());
 
     unsigned int glyphCount;
     hb_glyph_info_t *glyphInfo = hb_buffer_get_glyph_infos(buffer, &glyphCount);

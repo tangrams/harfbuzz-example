@@ -54,6 +54,8 @@ int main(int argc, char** argv) {
         HB_DIRECTION_TTB
     };
 
+    latinShaper.addFeature(HBFeature::KerningOn);
+
     gl::initGL(argc, argv);
             
     begin = clock();
