@@ -88,7 +88,6 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
                 &kernX, &kernY
             );    
         }
-        
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
         
         int twidth = pow(2, ceil(log(glyph->width)/log(2)));
