@@ -10,9 +10,9 @@ typedef struct {
 	float bearing_y;
 } Glyph;
 
-/* 
+/*
  * Font interface template
- */ 
+ */
 template <typename FF>
 class FontLib {
 

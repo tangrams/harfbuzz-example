@@ -1,7 +1,7 @@
 #pragma once
 
-#include <hb.h>
-#include <hb-ft.h>
+#include "hb.h"
+#include "hb-ft.h"
 #include <cmath>
 #include <vector>
 #include <limits>
@@ -64,9 +64,9 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
 
     hb_buffer_set_direction(buffer, text.direction);
     hb_buffer_set_script(buffer, text.script);
-    hb_buffer_set_language(buffer, hb_language_from_string(text.language.c_str(), text.language.size())); 
+    hb_buffer_set_language(buffer, hb_language_from_string(text.language.c_str(), text.language.size()));
     size_t length = text.data.size();
-    
+
     hb_buffer_add_utf8(buffer, text.c_data(), length, 0, length);
 
     // harfbuzz shaping
@@ -81,15 +81,15 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
         hb_position_t kernY = 0;
 
         if(i > 0) {
-            hb_font_get_glyph_kerning_for_direction(font, 
-                glyphInfo[i - 1].codepoint, 
+            hb_font_get_glyph_kerning_for_direction(font,
+                glyphInfo[i - 1].codepoint,
                 glyphInfo[i].codepoint,
                 text.direction,
                 &kernX, &kernY
-            );    
+            );
         }
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
-        
+
         int twidth = pow(2, ceil(log(glyph->width)/log(2)));
         int theight = pow(2, ceil(log(glyph->height)/log(2)));
 
@@ -164,9 +164,9 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
 template <typename FF>
 void HBShaper<FF>::init() {
     // TODO : use hb_font_create to make this generic
-    font = hb_ft_font_create(*face, NULL); 
+    font = hb_ft_font_create(*face, NULL);
     buffer = hb_buffer_create();
-    
+
     assert(hb_buffer_allocation_successful(buffer));
 }
 
@@ -175,5 +175,5 @@ HBShaper<FF>::~HBShaper() {
     lib->freeFace(face);
 
     hb_buffer_destroy(buffer);
-    hb_font_destroy(font); 
+    hb_font_destroy(font);
 }

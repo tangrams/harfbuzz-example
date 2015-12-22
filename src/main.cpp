@@ -14,13 +14,13 @@ int main(int argc, char** argv) {
 
     // the font rasterizing library
     FreeTypeLib lib;
-    clock_t begin, end; 
+    clock_t begin, end;
 
-    HBShaper<FT_Face> latinShaper("fonts/DejaVuSerif.ttf", &lib);
-    HBShaper<FT_Face> arabicShaper("fonts/amiri-regular.ttf", &lib);
-    HBShaper<FT_Face> russianShaper("fonts/DejaVuSerif.ttf", &lib);
-    HBShaper<FT_Face> hanShaper("fonts/fireflysung.ttf", &lib);
-    HBShaper<FT_Face> hindiShaper("fonts/Sanskrit2003.ttf", &lib);
+    HBShaper<FT_Face> latinShaper("DejaVuSerif.ttf", &lib);
+    HBShaper<FT_Face> arabicShaper("amiri-regular.ttf", &lib);
+    HBShaper<FT_Face> russianShaper("DejaVuSerif.ttf", &lib);
+    HBShaper<FT_Face> hanShaper("fireflysung.ttf", &lib);
+    HBShaper<FT_Face> hindiShaper("Sanskrit2003.ttf", &lib);
 
     latinShaper.init();
     arabicShaper.init();
@@ -68,7 +68,7 @@ int main(int argc, char** argv) {
     gl::initGL(argc, argv);
 
     begin = clock();
-    
+
     // ask for some meshes, this is not optimal since every glyph has its
     // own texture, should use an atlas than contains glyph inside
     for(auto mesh: latinShaper.drawText(hbt1, 20, 320)) {
@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
     std::cout << ((float) (end - begin) / CLOCKS_PER_SEC) * 1000 << " ms." << std::endl;
 
     gl::uploadMeshes(meshes);
-    
+
     gl::loop(meshes);
     gl::finish();
 

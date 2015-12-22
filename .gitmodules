@@ -1,0 +1,6 @@
+[submodule "harfbuzz-icu-freetype"]
+	path = harfbuzz-icu-freetype
+	url = git@github.com:tangrams/harfbuzz-icu-freetype.git
+[submodule "glfw"]
+	path = glfw
+	url = https://github.com/glfw/glfw.git
