@@ -12,19 +12,20 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "Build the GLFW example programs")
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "Build the GLFW test programs")
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "Build the GLFW documentation")
 set(GLFW_INSTALL OFF CACHE BOOL "Generate installation target")
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/glfw)
-target_include_directories(glfw PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/glfw/include)
-target_link_libraries(glfw INTERFACE ${GLFW_LIBRARIES} -ldl)
+add_subdirectory(${PROJECT_SOURCE_DIR}/glfw)
+include_directories(glfw ${PROJECT_SOURCE_DIR}/glfw/include)
+target_link_libraries(glfw INTERFACE ${GLFW_LIBRARIES})
+
+set(glew-cmake_BUILD_SHARED OFF CACHE BOOL "Build glew shared")
+add_subdirectory(${PROJECT_SOURCE_DIR}/glew-cmake)
+include_directories(${PROJECT_SOURCE_DIR}/glew-cmake/include)
 
 # Harfbuzz ICU Freetype
-add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/harfbuzz-icu-freetype)
-
-# OpenGL
-find_package(OpenGL REQUIRED)
+add_subdirectory(${PROJECT_SOURCE_DIR}/harfbuzz-icu-freetype)
 
 file(GLOB SOURCES src/*.cpp)
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
-target_link_libraries(${EXECUTABLE_NAME} freetype harfbuzz icucommon glfw ${OPENGL_LIBRARIES})
+target_link_libraries(${EXECUTABLE_NAME} freetype harfbuzz icucommon glfw libglew_static)
 
 # Copy resources
 file(GLOB_RECURSE RESOURCES ${PROJECT_SOURCE_DIR}/fonts/*)
