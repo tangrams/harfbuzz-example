@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GLFW/glfw3.h"
+#include <vector>
 
 namespace gl {
     GLFWwindow* g_window;

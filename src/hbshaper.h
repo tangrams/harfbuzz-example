@@ -2,15 +2,21 @@
 
 #include "hb.h"
 #include "hb-ft.h"
+#include "freetypelib.h"
+#include "glutils.h"
 #include <cmath>
 #include <vector>
 #include <limits>
 
-#include "fontlib.h"
-#include "hbtext.h"
-#include "glutils.h"
-
 using namespace std;
+
+typedef struct {
+    std::string data;
+    std::string language;
+    hb_script_t script;
+    hb_direction_t direction;
+    const char* c_data() { return data.c_str(); };
+} HBText;
 
 namespace HBFeature {
     const hb_tag_t KernTag = HB_TAG('k', 'e', 'r', 'n'); // kerning operations
@@ -25,39 +31,35 @@ namespace HBFeature {
     static hb_feature_t CligOn      = { CligTag, 1, 0, std::numeric_limits<unsigned int>::max() };
 }
 
-template <typename FF>
 class HBShaper {
-public:
-	HBShaper(const string& fontFile, FontLib<FF>* lib);
-	~HBShaper();
+    public:
+        HBShaper(const string& fontFile, FreeTypeLib* lib);
+        ~HBShaper();
 
-	void init();
-	vector<gl::Mesh*> drawText(HBText& text, float x, float y);
-    void addFeature(hb_feature_t feature);
+        void init();
+        vector<gl::Mesh*> drawText(HBText& text, float x, float y);
+        void addFeature(hb_feature_t feature);
 
-private:
-	FontLib<FF> *lib;
-	FF* face;
+    private:
+        FreeTypeLib* lib;
+        FT_Face* face;
 
-	hb_font_t* font;
-	hb_buffer_t* buffer;
-    vector<hb_feature_t> features;
+        hb_font_t* font;
+        hb_buffer_t* buffer;
+        vector<hb_feature_t> features;
 };
 
-template <typename FF>
-HBShaper<FF>::HBShaper(const string& fontFile, FontLib<FF>* fontLib) {
+HBShaper::HBShaper(const string& fontFile, FreeTypeLib* fontLib) {
     lib = fontLib;
     float size = 50;
     face = lib->loadFace(fontFile, size * 64, 72, 72);
 }
 
-template <typename FF>
-void HBShaper<FF>::addFeature(hb_feature_t feature) {
+void HBShaper::addFeature(hb_feature_t feature) {
     features.push_back(feature);
 }
 
-template <typename FF>
-vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
+vector<gl::Mesh*> HBShaper::drawText(HBText& text, float x, float y) {
     vector<gl::Mesh*> meshes;
 
     hb_buffer_reset(buffer);
@@ -82,11 +84,11 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
 
         if(i > 0) {
             hb_font_get_glyph_kerning_for_direction(font,
-                glyphInfo[i - 1].codepoint,
-                glyphInfo[i].codepoint,
-                text.direction,
-                &kernX, &kernY
-            );
+                    glyphInfo[i - 1].codepoint,
+                    glyphInfo[i].codepoint,
+                    text.direction,
+                    &kernX, &kernY
+                    );
         }
         Glyph* glyph = lib->rasterize(face, glyphInfo[i].codepoint);
 
@@ -99,7 +101,7 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
             memcpy(tdata + iy * twidth, glyph->buffer + iy * glyph->width, glyph->width);
         }
 
-        #ifdef DEBUG
+#ifdef DEBUG
         for(int iy = 0; iy < glyph->height; ++iy) {
             for(int ix = 0; ix < glyph->width; ++ix) {
                 int c = (int) glyph->buffer[iy * glyph->width + ix];
@@ -108,7 +110,7 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
             cout << endl;
         }
         cout << endl;
-        #endif
+#endif
 
         float s0 = 0.0;
         float t0 = 0.0;
@@ -161,17 +163,14 @@ vector<gl::Mesh*> HBShaper<FF>::drawText(HBText& text, float x, float y) {
     return meshes;
 }
 
-template <typename FF>
-void HBShaper<FF>::init() {
-    // TODO : use hb_font_create to make this generic
+void HBShaper::init() {
     font = hb_ft_font_create(*face, NULL);
     buffer = hb_buffer_create();
 
     assert(hb_buffer_allocation_successful(buffer));
 }
 
-template <typename FF>
-HBShaper<FF>::~HBShaper() {
+HBShaper::~HBShaper() {
     lib->freeFace(face);
 
     hb_buffer_destroy(buffer);

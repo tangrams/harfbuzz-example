@@ -5,7 +5,7 @@ FreeTypeLib::FreeTypeLib() {
 }
 
 FreeTypeLib::~FreeTypeLib() {
-    FT_Done_FreeType(lib); 
+    FT_Done_FreeType(lib);
 }
 
 FT_Face* FreeTypeLib::loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) {
@@ -41,13 +41,13 @@ int FreeTypeLib::force_ucs2_charmap(FT_Face ftf) {
 
 Glyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
     Glyph* g = new Glyph;
-    
+
     FT_Int32 flags =  FT_LOAD_DEFAULT;
 
     assert(!FT_Load_Glyph(*face,
-        glyphIndex, // the glyph_index in the font file 
+        glyphIndex, // the glyph_index in the font file
         flags
-    )); 
+    ));
 
     FT_GlyphSlot slot = (*face)->glyph;
     assert(!FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL));

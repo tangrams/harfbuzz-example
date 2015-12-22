@@ -16,11 +16,11 @@ int main(int argc, char** argv) {
     FreeTypeLib lib;
     clock_t begin, end;
 
-    HBShaper<FT_Face> latinShaper("DejaVuSerif.ttf", &lib);
-    HBShaper<FT_Face> arabicShaper("amiri-regular.ttf", &lib);
-    HBShaper<FT_Face> russianShaper("DejaVuSerif.ttf", &lib);
-    HBShaper<FT_Face> hanShaper("fireflysung.ttf", &lib);
-    HBShaper<FT_Face> hindiShaper("Sanskrit2003.ttf", &lib);
+    HBShaper latinShaper("DejaVuSerif.ttf", &lib);
+    HBShaper arabicShaper("amiri-regular.ttf", &lib);
+    HBShaper russianShaper("DejaVuSerif.ttf", &lib);
+    HBShaper hanShaper("fireflysung.ttf", &lib);
+    HBShaper hindiShaper("Sanskrit2003.ttf", &lib);
 
     latinShaper.init();
     arabicShaper.init();
@@ -71,6 +71,7 @@ int main(int argc, char** argv) {
 
     // ask for some meshes, this is not optimal since every glyph has its
     // own texture, should use an atlas than contains glyph inside
+    //       ->>>>>>> e.g. DON'T DO THIS <<<<<<<<<-
     for(auto mesh: latinShaper.drawText(hbt1, 20, 320)) {
         meshes.push_back(mesh);
     }
@@ -90,7 +91,6 @@ int main(int argc, char** argv) {
     for(auto mesh: hindiShaper.drawText(hbt5, 20, 20)) {
         meshes.push_back(mesh);
     }
-
     end = clock();
 
     std::cout << ((float) (end - begin) / CLOCKS_PER_SEC) * 1000 << " ms." << std::endl;

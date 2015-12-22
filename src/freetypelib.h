@@ -1,5 +1,5 @@
 #pragma once
-  
+
 #include <ft2build.h>
 #include FT_FREETYPE_H
 
@@ -7,19 +7,25 @@
 #include <cassert>
 #include <cmath>
 
-#include "fontlib.h"
-
 using namespace std;
 
-class FreeTypeLib : public FontLib<FT_Face> {
+typedef struct {
+	unsigned char* buffer;
+	unsigned int width;
+	unsigned int height;
+	float bearing_x;
+	float bearing_y;
+} Glyph;
+
+class FreeTypeLib {
 public:
 	FreeTypeLib();
 	~FreeTypeLib();
 
-	FT_Face* loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) override;
-	void freeFace(FT_Face* face) override;
-	Glyph* rasterize(FT_Face* face, uint32_t glyphIndex) const override;
-	void freeGlyph(Glyph* glyph) override;
+	FT_Face* loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI);
+	void freeFace(FT_Face* face);
+	Glyph* rasterize(FT_Face* face, uint32_t glyphIndex) const;
+	void freeGlyph(Glyph* glyph);
 
 private:
 	FT_Library lib;
