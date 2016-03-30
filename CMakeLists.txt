@@ -21,6 +21,8 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/glew-cmake)
 include_directories(${PROJECT_SOURCE_DIR}/glew-cmake/include)
 
 # Harfbuzz ICU Freetype
+set(HARFBUZZ_BUILD_ICU ON CACHE BOOL "Enable building of ICU")
+set(HARFBUZZ_BUILD_UCDN ON CACHE BOOL "Enable building of UCDN")
 add_subdirectory(${PROJECT_SOURCE_DIR}/harfbuzz-icu-freetype)
 
 file(GLOB SOURCES src/*.cpp)
