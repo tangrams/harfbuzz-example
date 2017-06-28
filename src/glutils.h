@@ -38,7 +38,8 @@ namespace gl {
         "varying vec2 f_uv;\n"
         "void main() {\n"
         "gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * a_position;\n"
-        "f_uv = a_uv;\n";
+        "f_uv = a_uv;\n"
+        "}\n";
 
     static const GLchar* fragmentSrc =
         "uniform sampler2D u_tex;\n"
