@@ -1,5 +1,6 @@
 #pragma once
 
+#define GLEW_STATIC
 #include "GL/glew.h"
 #include "GLFW/glfw3.h"
 #include <vector>
@@ -12,10 +13,13 @@ namespace gl {
     GLint positionLoc;
     GLint uvLoc;
 
-    typedef struct {
+    struct Vertex {
         float x, y;
         float s, t;
-    } Vertex;
+
+        Vertex() {}
+        Vertex(float _x, float _y, float _s, float _t) : x(_x), y(_y), s(_s), t(_t) {}
+    };
 
     typedef struct {
         unsigned short* indices;
@@ -29,28 +33,19 @@ namespace gl {
     } Mesh;
 
     static const GLchar* vertexSrc =
-        R"END(
-        attribute vec4 a_position;
-    attribute vec2 a_uv;
-
-    varying vec2 f_uv;
-
-    void main() {
-        gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * a_position;
-        f_uv = a_uv;
-    }
-    )END";
+        "attribute vec4 a_position;\n"
+        "attribute vec2 a_uv;\n"
+        "varying vec2 f_uv;\n"
+        "void main() {\n"
+        "gl_Position = gl_ProjectionMatrix * gl_ModelViewMatrix * a_position;\n"
+        "f_uv = a_uv;\n";
 
     static const GLchar* fragmentSrc =
-        R"END(
-        uniform sampler2D u_tex;
-
-    varying vec2 f_uv;
-
-    void main() {
-        gl_FragColor = texture2D(u_tex, f_uv);
-    }
-    )END";
+        "uniform sampler2D u_tex;\n"
+        "varying vec2 f_uv;\n"
+        "void main() {\n"
+        "    gl_FragColor = texture2D(u_tex, f_uv);\n"
+        "}\n";
 
     void createShaderProgram() {
         program = glCreateProgram();
@@ -125,7 +120,7 @@ namespace gl {
 
         glewExperimental = GL_TRUE;
 
-        assert(glewInit() == GLEW_OK);
+        glewInit();
 
         glfwSetWindowSizeCallback(g_window, resize);
 

@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cassert>
 #include <ctime>
 
 #include "hbshaper.h"

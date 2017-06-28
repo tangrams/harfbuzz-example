@@ -1,7 +1,7 @@
 #include "freetypelib.h"
 
 FreeTypeLib::FreeTypeLib() {
-    assert(!FT_Init_FreeType(&lib));
+    FT_Init_FreeType(&lib);
 }
 
 FreeTypeLib::~FreeTypeLib() {
@@ -11,9 +11,9 @@ FreeTypeLib::~FreeTypeLib() {
 FT_Face* FreeTypeLib::loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) {
     FT_Face* face = new FT_Face;
 
-    assert(!FT_New_Face(lib, fontName.c_str(), 0, face));
-    assert(!force_ucs2_charmap(*face));
-    assert(!FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI));
+    FT_New_Face(lib, fontName.c_str(), 0, face);
+    force_ucs2_charmap(*face);
+    FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI);
 
     return face;
 }
@@ -44,13 +44,13 @@ Glyph* FreeTypeLib::rasterize(FT_Face* face, uint32_t glyphIndex) const {
 
     FT_Int32 flags =  FT_LOAD_DEFAULT;
 
-    assert(!FT_Load_Glyph(*face,
+    FT_Load_Glyph(*face,
         glyphIndex, // the glyph_index in the font file
         flags
-    ));
+    );
 
     FT_GlyphSlot slot = (*face)->glyph;
-    assert(!FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL));
+    FT_Render_Glyph(slot, FT_RENDER_MODE_NORMAL);
 
     FT_Bitmap ftBitmap = slot->bitmap;
 

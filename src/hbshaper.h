@@ -115,10 +115,10 @@ vector<gl::Mesh*> HBShaper::drawText(HBText& text, float x, float y) {
         float y1 = floor(y0 - glyph->height);
 
         gl::Vertex* vertices = new gl::Vertex[4];
-        vertices[0] = { x0,y0, s0,t0 };
-        vertices[1] = { x0,y1, s0,t1 };
-        vertices[2] = { x1,y1, s1,t1 };
-        vertices[3] = { x1,y0, s1,t0 };
+        vertices[0] = gl::Vertex(x0,y0, s0,t0);
+        vertices[1] = gl::Vertex(x0,y1, s0,t1);
+        vertices[2] = gl::Vertex(x1,y1, s1,t1);
+        vertices[3] = gl::Vertex(x1,y0, s1,t0);
 
         unsigned short* indices = new unsigned short[6];
         indices[0] = 0; indices[1] = 1;
@@ -154,7 +154,7 @@ void HBShaper::init() {
     font = hb_ft_font_create(*face, NULL);
     buffer = hb_buffer_create();
 
-    assert(hb_buffer_allocation_successful(buffer));
+    hb_buffer_allocation_successful(buffer);
 }
 
 HBShaper::~HBShaper() {

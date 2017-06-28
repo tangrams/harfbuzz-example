@@ -4,7 +4,6 @@
 #include FT_FREETYPE_H
 
 #include <iostream>
-#include <cassert>
 #include <cmath>
 
 using namespace std;
