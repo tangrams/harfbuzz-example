@@ -32,7 +32,9 @@ target_link_libraries(${EXECUTABLE_NAME} freetype harfbuzz icucommon glfw libgle
 # Copy resources
 file(GLOB_RECURSE RESOURCES ${PROJECT_SOURCE_DIR}/fonts/*)
 foreach(_resource ${RESOURCES})
-    add_custom_command(
-        TARGET ${EXECUTABLE_NAME}
-        COMMAND POST_BUILD cp -P ${_resource} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+  if(CMAKE_SYSTEM_NAME STREQUAL "Windows")
+    add_custom_command(TARGET ${EXECUTABLE_NAME} COMMAND POST_BUILD copy /Y ${_resource} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+  else()
+    add_custom_command(TARGET ${EXECUTABLE_NAME} COMMAND POST_BUILD cp -P ${_resource} ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+  endif()
 endforeach()
