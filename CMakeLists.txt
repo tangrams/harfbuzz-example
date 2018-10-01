@@ -27,7 +27,7 @@ add_subdirectory(${PROJECT_SOURCE_DIR}/harfbuzz-icu-freetype)
 
 file(GLOB SOURCES src/*.cpp)
 add_executable(${EXECUTABLE_NAME} ${SOURCES})
-target_link_libraries(${EXECUTABLE_NAME} freetype harfbuzz icucommon glfw libglew_static)
+target_link_libraries(${EXECUTABLE_NAME} harfbuzz icucommon freetype glfw libglew_static)
 
 # Copy resources
 file(GLOB_RECURSE RESOURCES ${PROJECT_SOURCE_DIR}/fonts/*)
