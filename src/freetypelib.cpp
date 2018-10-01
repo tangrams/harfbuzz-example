@@ -11,7 +11,13 @@ FreeTypeLib::~FreeTypeLib() {
 FT_Face* FreeTypeLib::loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) {
     FT_Face* face = new FT_Face;
 
-    FT_New_Face(lib, fontName.c_str(), 0, face);
+    auto error = FT_New_Face(lib, fontName.c_str(), 0, face);
+    if (FT_Err_Unknown_File_Format == error) {
+      std::cerr << "cannot open font file\n";
+    } else if (error) {
+
+      std::cerr << "unknown error loading file " <<  fontName << "\n";
+    }
     force_ucs2_charmap(*face);
     FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI);
 
