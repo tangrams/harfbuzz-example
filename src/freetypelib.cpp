@@ -1,4 +1,5 @@
 #include "freetypelib.h"
+#include <cassert>
 
 FreeTypeLib::FreeTypeLib() {
     FT_Init_FreeType(&lib);
@@ -11,7 +12,9 @@ FreeTypeLib::~FreeTypeLib() {
 FT_Face* FreeTypeLib::loadFace(const string& fontName, int ptSize, int deviceHDPI, int deviceVDPI) {
     FT_Face* face = new FT_Face;
 
-    FT_New_Face(lib, fontName.c_str(), 0, face);
+    FT_Error error = FT_New_Face(lib, fontName.c_str(), 0, face);
+    assert(error == 0 && "Cannot open font file");
+
     force_ucs2_charmap(*face);
     FT_Set_Char_Size(*face, 0, ptSize, deviceHDPI, deviceVDPI);
 
